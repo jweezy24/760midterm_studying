@@ -15,8 +15,10 @@ Each node that is not a leaf node has a **split condition**.
 These split conditions split the data set on a single feature based on a single bound.
 These splits are deteremined using the **information gain ratio**(IGR).
 To define IGR we first need to define **entropy** which is,
-$$H(x) := -\sum_{x\in X} p(x) \log(p(x))\\
-    = E[\log(p(x))]$$
+\[
+    H(x) := -\sum_{x\in X} p(x) \log(p(x))\\
+    = E[\log(p(x))]
+\]
 Where, $p(x)$ is the probability of an event $x$ happening and $E[x]$ is the expected value of x.
 The entropy tells us how random a set of data is.
 An $H[x] = 0$ tells us there is no randomness, i.e only one event exists in the set of points.
