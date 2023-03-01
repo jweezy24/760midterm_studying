@@ -11,10 +11,10 @@ This section will go over all of the ml algorithms coded from scratch.
 Located in the `/dtrees` folder, is the algorithm for decision trees.
 ![dtrees](figures/Dtrees.png)
 The above visualization demonstrates how the algorithm works at a high level.
-The each node that is not a leaf node has a **split condition**.
+Each node that is not a leaf node has a **split condition**.
 These split conditions split the data set on a single feature based on a single bound.
-These splits are deteremined using the information gain ratio(IGR).
-To define IGR we first need to define the **entropy** which is,
+These splits are deteremined using the **information gain ratio**(IGR).
+To define IGR we first need to define **entropy** which is,
 $$
     H(x) := -\sum_{x\in X} p(x) \log(p(x))\\
     = E[\log(p(x))]
