@@ -24,11 +24,78 @@ The entropy tells us how random a set of data is.
 An $H[x] = 0$ tells us there is no randomness, i.e only one event exists in the set of points.
 We can see that if there is only one event in the set $X$ that event will have a $p(x) = 1$ which will $\log(1) = 0$ thus having an entropy of 0.
 
+### k-Nearest Neighbors
+
+One of the simpler algorithms, the nearest neighbor algorithm will classify the points based on the point it is closest to in the dataset.
+
+Below depicts a $k=1$ nearest neighbor algorithm visualized.
+![vd](figures/voronoi_diagram.png)
+As we can see, the regions around each determine which points will share that label based on the other point's location.
+A little confusing but the idea here is that **a point is classified based on the closest point(when $k=1$).**
+
+When $k>1$ we actually determine class based on the k nearest points.
+For example, if $k=2$ we look at the 2 closest points and determin the label by the class that occurs the most frequently.
+As you may have infered, ties can occur.
+To solve this problem use an odd number for $k$ this solution will only work if there are only two classes.
+If there are more than two classes than a tie can still occur.
+Usually, if there is a tie, default to the closest point.
+If there is still a tie, randomly pick one of the points to decide a label.
+A formal description for what I am talking about is below:
+```math
+\hat{y} = \argmin_{y\in Y}\sum_{i=1}^{k}1(y = y^i)
+```
+Excuse the lack of an indicator function, I do not know how to write it in markup.
+However, the equation above formalizes the idea of prediction.
 
 ## Concepts
 
-##### Unsupervised Learning
+#### Unsupervised Learning
 This is the idea that a dataset does not have any labels for its training data.
+There are less formalities with this type of machine learning.
+I don't know if that is applied through the entire study but this lecutre does not take equal amount of time to define this type of learning.
+
+##### Setup
+
+Given:
+$$
+\{x^1,x^2,...,x^n\}
+$$
+The **goal** is to discover interesting regularities/structures/patterns that characterize the instances.
+For example, clustering, anomoly detection, and dimensionality reduction all fall under unsupervised learning.
+To paraphrase a bit, unsupervised learning is designed for pattern identification with a lack of labels.
+
+##### Clustering
+
+The goal for clustering is to model *h* such that it divides training set into clusters with intra-cluster similarity amd inter-cluster dissimilarity.
+To paraphrase again, the goal is to group *close* points and separate *far* points.
+You may be asking yourself, how do you define distance for points where there is no clear definition of distnace?
+Well, there are many ways, one can project points with no sense of distances into a space where distance is defined.
+Or as my professor put it, just don't use the clusering algorithms.
+
+![cluster](figures/clustering_example.png)
+
+Above is a visualization of the concepts discussed. 
+
+
+##### Anomaly Detection
+
+The goal of anomaly detection is to detect anomalies.
+Yes I know riviting.
+But this problem is actually harder than it sounds.
+Although simple to define what the goal is, defining what an anomoly is depends completely on the space you are working in.
+An anomaly for a signal processing problem will look completely different than a computer vision anomaly.
+Defining the anomaly to a computer is the most difficult component.
+
+##### Dimensionality Reduction
+
+The goal for dimensionality reduction is to find patterns in lower dimensional feature vectors.
+In other words to detect correlations between lower dimensions within the dataset.
+This concept again is harder than it sounds.
+A easy example for those who know about it is **PCA** or Principal Component Analysis.
+PCA defines what deminsions have the most information about the data.
+I do not want to get into the definition here as this is a high level overview but the point is that it accomplishes the goal of dimensionality reduction which is find lower dimensional patterns within a dataset.
+
+
 
 #### Supervised Learning
 This is the idea that a machine learning model is trained on data that has labels.
@@ -66,16 +133,35 @@ Let $h_{\theta}(x) = \sum_{\theta_i \in h_{\theta}}{\theta_i x_i} $, $h_{\theta}
 $h_{\theta}$ is simplier because we can control the amount of parameters and nothing special is applied to $x$.
 $\theta_i$ is a weight and $x_i$ is a feature. 
 
+##### Types of Training
+
+There are two types of learning defined in the lectures.
+1. Batch Learning
+2. Online Learning
+
+**Batch Learning** trains over all instances at once.
+Whereas, **Online Learning** trains the model on a specific group then updates are gotten per group.
+
+The general idea behind these two concepts says that both methods for training work.
+I am a bit confused as to why the separation is important but I digress.
+
 ##### Goal of Supervised Learning
 
 Goal: **Find a model $h$ that best approximates $f$**
 To find $f$ we have to work with a minimization problem:
 
-$$
+```math
 \hat{f} = \argmin_{h \in H} \frac{1}{n} \sum_{i=1}^{n}l(h(x^i),y^i)
-$$
+```
+
+$\hat{f}$ is known as **Empirical risk minimization**(ERM).
 
 $l$ is a new symbol we have yet to define, $l$ is what we call a loss function.
 Let us now describe what $\hat{f}$ really means.
-We want to find $h$ such that $l$ is super small. 
-The smaller that $l$ is, the better the selected model is. 
+We want to find $h$ such that the sum over all points $l$ is super small. 
+The smaller that sum over $l$ is, the better the selected model is.
+Intuitively this makes sense, the total error being low does imply that the model is the best.
+
+
+
+
