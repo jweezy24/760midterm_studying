@@ -68,6 +68,42 @@ $$
 I implemented standardization in the file `utilities/standardization.py`.
 I show that the sklearn standardization is gets the same result as my simple implementation.
 
+I implemented a basic kNN algorithm in the file `nearest_neighbors/nn_alg.py`.
+I have not implemented fancy nearest neighbors yet.
+I think I eventually will.
+
+There still remains the question, **How do you deal with irrelevant features?**
+![irrelevant_features](figures/irrelevant_features.png)
+Above is an example of how irrelevant features can affect the distances.
+This is just a problem with kNN models in general.
+They are weak to irrelevant features.
+
+**Strengths**
+1. Easy to explain predictions
+2. Simple to implement
+3. No training
+4. Often a good solution in practice
+
+**Weaknesses**
+1. Sensitive to irrelevant features (see image above)
+2. Prediction stage can be expensive
+3. No "model" to interperet 
+
+The **Inductive Bias** is defined as assumptions a learner uses to predict a label $y$ for a previosuly unseen instance $x_i$.
+There are two components that make up inductive bias: **hypothesis space bias** and **preference bias**.
+**Preference Bias** specifies a preference ordering within the space of models.
+**Hypothesis Space Bias** determins the models that can be represented.
+These definitions at face value are not good.
+To simplify these abstract definitions, inductive bias is a set of assumptions that a machine learning algorithm makes about the relationship between the input and output data based on the training data.
+Our preference bias is then defined by the neighborhoods seen in training data.
+ChatGPT gave me a great example to explain this intuitively.
+Imagine training a classifier based on movie reccomendations, if I prefer action movies, my training data will have a preference bias towards action movies.
+Therefore, someone who does not enjoy action movies will have a less accurate rating prediction than me.
+Hypothesis classes are actually a little easier to grasp.
+Again, with the help of ChatGPT, a hypothesis class is more about boundry creation.
+If a boundry is explicitly linear, then the kNN model will have trouble because kNN doesn't draw linear boundries well.
+Therefore, kNN models have a hypothesis bias.
+
 ## Concepts
 
 #### Unsupervised Learning

@@ -7,72 +7,51 @@ from scipy.spatial.distance import cdist
 from sklearn.metrics import roc_curve
 from sklearn.metrics import auc
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.datasets import make_blobs
 
-def eval_neighbors_d2z(p,data,labels=None,k=1,use_email_dataset=True,p_is_matrix=True):
-    distances = []
-    import time
-    if use_email_dataset:
-        assert(type(labels) !=  type(None))
+def get_datasets(n,features,div=8):
+    X,y = make_blobs(n,features)
+    split = int(n*((n*(div-1))/(n*div)))
+    X_t = X[0:split,:]
+    y_t = y[0:split]
+    X_te = X[split:,:]
+    y_te = y[split:]
+    return X_t,y_t,X_te,y_te
 
-        p = p.astype(float)
-        data = data.astype(float)
-        start = time.time()
-        if not p_is_matrix:
-            p = p.reshape((1,len(p)))
-            p = p.astype(float)
-            for i in range(len(data)):
-                p2 = data[i,:].astype(float)
-                z = labels[i]
-                # d = euclidean(p,p2)
-                p2 = p2.reshape((1,len(p2)))
-                
-                
-                d = cdist(p,p2,metric="euclidean")
-                d = d.flatten()[0]
-                distances.append((d,z))
-            distances.sort(key=lambda x: x[0])
-        else:
-            d = cdist(p,data,metric="euclidean")
-            ret = []
-            labels = labels.astype(int)
-            confidence = []
+def knn_alg_supervised(training,testing,training_labels,k=1,variation="",weights=[]):
+    #Calculate Distances
+    d = cdist(testing,training,metric="euclidean")
+    #Intializes returns
+    ret = []
+    confidences = []
+
+    #Checks variation
+    if variation == "normal":
+        #Each row represents the set of all distances in the training set to a single point
+        for distance_to_point in d:
+            #Sorts the results by then gets the ranked labels
+            ls = training_labels[np.argsort(distance_to_point)][:k]
+            #Bins each result the index is the value and the value at the index is the number of occurances
+            ls = np.bincount(ls)
+            #Grabs the predicted label
+            b = np.argmax(ls)
+
+            #Computes the confidence value
+            tracker = [0 for i in range(len(set(training_labels)))]
+            for i in ls:
+                tracker[i] += 1
+            confidence = tracker[b]/sum(tracker) 
             
-            for d_to_p in d:
-                ls = labels[np.argsort(d_to_p)][:k]
-                ls2 = labels[np.argsort(d_to_p)][:k]
-                ls = np.bincount(ls)
-                b = np.argmax(ls)
-                tracker = [0,0]
-                for i in ls2:
-                    tracker[i]+=1
-                conf = tracker[b]/sum(tracker)
-                # print(b,conf)
-                ret.append(b)
-                confidence.append(1-conf)
-            end = time.time()
-            print(f"Done with distances. Time:{end-start} seconds")
-            return ret,confidence                 
-        
-    else:
-        for x,y,z in data:
-            p2 = (x,y)
-            d = euclidean(p,p2)
-            distances.append((d,z))
-        distances.sort(key=lambda x: x[0])
+            #Appended predicted label with its accociated confidence value
+            ret.append(b)
+            confidences.append(confidence)
+        return ret,confidence
 
-    
-    if k>1:
-        nearest = distances[:k]
-        assert(len(nearest) == k)
-        table = {}
-        for d,l in nearest:
-            if l not in table.keys():
-                table[l] =1
-            else:
-                table[l]+=1
-        its = list(table.items())
-        its.sort(key=lambda x: x[1])
-        return its[0][0]
-    else:
-        
-        return distances[0][1]        
+if __name__ == "__main__":
+    variation = "normal"
+    n = 1000
+    features = 5
+    training,training_labels,testing,testing_labels = get_datasets(n, features)
+    knn_alg_supervised(training, testing, training_labels,variation=variation)
+
+
