@@ -16,13 +16,54 @@ These split conditions split the data set on a single feature based on a single 
 These splits are deteremined using the **information gain ratio**(IGR).
 To define IGR we first need to define **entropy** which is,
 ```math
-    H(x) := -\sum_{x\in X} p(x) \log(p(x))\\
-    = E[\log(p(x))]
+    H(x) := -\sum_{x\in X} p(x) \log_2(p(x))\\
+    = E[\log_2(p(x))]
 ```
 Where, $p(x)$ is the probability of an event $x$ happening and $E[x]$ is the expected value of x.
 The entropy tells us how random a set of data is.
 An $H[x] = 0$ tells us there is no randomness, i.e only one event exists in the set of points.
 We can see that if there is only one event in the set $X$ that event will have a $p(x) = 1$ which will $\log(1) = 0$ thus having an entropy of 0.
+The information gain(IG) can now be defined below.
+```math
+    IG(Y,X) = H(Y) - H(Y|X)
+```
+So what this is saying intuitively is IG is the difference between the entropy of the even occuring over the data set and the entropy of the event happening when another event occurs.
+Lets work through this example below,
+![dtree_alg](figures/entropy_example.png)
+First we calculate, 
+```math
+    H(Y) = -\sum_{x\in Y} p(x) \log(p(x))\\
+    = (0.5(\log(0.5))) + (0.25(\log(0.25))) + (0.125(\log(0.125))) + (0.125(\log(0.125))) \\
+    = 1.75
+```
+Next we calcuate,
+```math
+    H(Y|X) = -\sum_{x\in X}\sum_{y\in Y} p(x,y) \log(p(y|x))\\
+    = 1.5
+```
+I wrote code in `utilities/entropy` calculating the results.
+I just want to make a few notes, the notation does not account for conditional probability situations.
+This again, is very annoying because the **conditional entropy is defined differently than regular entropy.**
+As we can see from the equations above.
+To get the result you have to apply Bayes rule to redefine the conditional within the log to be a product of the joint probabilities divided by the probability of $x$.
+
+We can now finally define the IGR we discussed erlier.
+```math
+    IGR(X,Y) = \frac{IG(X,Y)}{H(Y)} 
+```
+Finally we have a formal definition of IGR. 
+
+![dtree_alg](figures/dtree_algorithm.png)
+Now that we have IGR we can walk through the decision tree algorithm.
+The canidate splits are determined by the highest IGR when selecting a point to be conditioned over.
+The stopping criteria will be when the IGR is zero or when the set of training instances is empty.
+A leaf node will delegate a label once a testing sample is ran through the dtree.
+Finding the best split is just using the maximal IGR we determined from when making $C$.
+Once $C$ has been determined, we branch off into subsets.
+If there are only two classes, then there will only be two subsets.
+Each subset will get a node and the algorithm will be called recursively.
+For an implementation example, see `dtrees/decision_trees.py`.
+
 
 ### k-Nearest Neighbors (kNN)
 
