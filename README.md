@@ -24,7 +24,7 @@ The entropy tells us how random a set of data is.
 An $H[x] = 0$ tells us there is no randomness, i.e only one event exists in the set of points.
 We can see that if there is only one event in the set $X$ that event will have a $p(x) = 1$ which will $\log(1) = 0$ thus having an entropy of 0.
 
-### k-Nearest Neighbors
+### k-Nearest Neighbors (kNN)
 
 One of the simpler algorithms, the nearest neighbor algorithm will classify the points based on the point it is closest to in the dataset.
 
@@ -46,6 +46,27 @@ A formal description for what I am talking about is below:
 ```
 Excuse the lack of an indicator function, I do not know how to write it in markup.
 However, the equation above formalizes the idea of prediction.
+
+Standardization is another topic that can be applied to multiple algorithms here but the lecture slides introduce the concept when discussing kNN.
+To discuss the process, we first need to formalize the standard deviation and mean.
+**Mean**
+```math
+    \mu_a = \frac{1}{n}\sum_{i=1}^{n}x_a^i
+```
+**Standard Deviation**
+```math
+    \sigma_a = (\frac{1}{n}\sum_{i=1}^{n}(x_a^i - \mu_a)^2)^{\frac{1}{2}}
+```
+Above is explicitly in the notes, however I do believe the $\mu_a$ is supposed to be $\mu_a$.
+In the notes the original definition defines it as $\mu_i$ which doesn't make any sense.
+That would imply that there are multiple means, or a single mean per point.
+
+The standardization formalization can now be written as.
+$$
+\hat{x}_a^j = \frac{x_a^j - \mu_a}{\sigma_a} 
+$$
+I implemented standardization in the file `utilities/standardization.py`.
+I show that the sklearn standardization is gets the same result as my simple implementation.
 
 ## Concepts
 
