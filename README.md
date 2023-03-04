@@ -98,7 +98,7 @@ To discuss the process, we first need to formalize the standard deviation and me
 ```math
     \sigma_a = (\frac{1}{n}\sum_{i=1}^{n}(x_a^i - \mu_a)^2)^{\frac{1}{2}}
 ```
-Above is explicitly in the notes, however I do believe the $\mu_a$ is supposed to be $\mu_a$.
+Above is explicitly not in the notes, however I do believe the $\mu_a$ is supposed to be $\mu_a$.
 In the notes the original definition defines it as $\mu_i$ which doesn't make any sense.
 That would imply that there are multiple means, or a single mean per point.
 
