@@ -608,3 +608,33 @@ When given a set of points over a normal distribution, the likelihood function w
 
 Now with this understanding, we can finally define the maximum likelihood as, 
 ![likelihood_eq](figures/likelihood_eq.png)
+
+#### Cross-Entropy Loss
+
+Cross-Entropy is a common loss function that is seen frequently in the ML scene(I think).
+It is a measure of how different the predicted probability distribution of a model is from the true probability distribution of the data.
+Thus, minimizing the difference in distribution would best represent the training data.
+
+Let $p^i = P_{\theta}(y|x^i)$ be our prediction.
+Our loss can be written as,
+![ce_eq](figures/ce_eq.png)
+
+How do we minimize cross entropy?
+Well, the slides say KL divergence.
+I do not know what that is, lemme ask the oracle ChatGPT.
+It has spoken, the KL divergence is a measure how different two distributions are from one another.
+This makes sense as the equation for KL divergence of two distributions $P$ and $Q$ is,
+```math
+    KL(P|Q) = -\sum_i( p_P(x^i)*\log(\frac{p_Q(x^i)}{p_P(x^i)}) )\\
+    =\sum_i  p_P(x^i)*\log(p_Q(x^i)) - p_P(x^i)*\log(p_P(x^i)) 
+```
+The first term in the sum within the sum is the cross entropy, the second term is the fixed entropy of the data we have.
+
+#### Softmax
+
+The softmax converts a vector into a probability vector.
+The equation is below,
+```math
+    P_\theta(y=i|x) = \frac{e^{\theta^i x}}{\sum_{j=1}^k e^{ (\theta^j)^\top x }}
+```
+I wrote some code as an example calculation in the file `utilities/softmax_calc.py`.
