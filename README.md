@@ -64,6 +64,13 @@ If there are only two classes, then there will only be two subsets.
 Each subset will get a node and the algorithm will be called recursively.
 For an implementation example, see `dtrees/decision_trees.py`.
 
+For the final note on dtrees, let us describe the inductive bias.
+The **hypothesis space bias** is the decision tree algorithms favor trees with single features, axis parallel splits.
+What this means is that the algorithm will tend toward designing models that are focused in a single dimension and place splits in parallel.
+We can think about it as Dtrees are tend towards dividing up spaces with straight lines through where the lines are defined only in a single dimension.
+The **preference bias** is indicitive of small trees identified by greedy search.
+This means that the dtree algorithm will tend to try and make smaller trees with the greedy search algorithm.
+
 
 ### k-Nearest Neighbors (kNN)
 
@@ -261,5 +268,163 @@ The smaller that sum over $l$ is, the better the selected model is.
 Intuitively this makes sense, the total error being low does imply that the model is the best.
 
 
+#### Occam's Razor
+Why is this a machine learning concept?
+Well, the translated phrase is "**Entities should not be multiplied beyond necessity.**"
+Further translation, "**When you have two competing threories that make the same prediction the simpler one is better.**"
+This concept is applied to **decision tree learning** because the central hypothesis is, "the simplest tree that classifies the training stances accurately will generalize."
+So how does Occam's razor apply?
+Well, there are fewer small sized trees than long ones.
+A short tree is unlikely to fit the data very well whereas a large tree would be more likely.
+How hard is it to find the shortest decision tree?
+It is **NP-Hard** to find the shortest possible decision tree.
+Therefore, the general solution is to greedily choose splits based on entropy.
+For more on how that is done, see the decision trees section.
 
 
+#### Overfitting
+
+Model overfitting is one of the most common problems in machine learning.
+A model overfits under two conditions:
+1. A low error on training data.
+2. A high error over whole distribution.
+
+Again, there is a great visualization in the slides below.
+![overfitting_vis](figures/overfitting_view.png)
+
+Another good visualization of overfitting comes again from the slides.
+![dtree_overfitting](figures/dtree_overfitting_example.png)
+The figure above has an x-axis of tree size and a y-axis of accuracy.
+As the tree grows in size, the training data becomes more accurate where as the test set becomes less accurate.
+Thus it is a great example of overfitting.
+
+To describe the general phenomenon further, there is another figure from the slides.
+![dtree_overfitting](figures/capacity_chart_overfitting.png)
+Above is shows the optimal capacity is the boundry of the overfitting zone.
+It is the moment that the model begins to overfit to the training data.
+
+#### Evaluation Metrics
+
+This section will be very important and I will try to have code examples for a lot of these.
+
+##### Tuning Set
+
+A tuning set is a set that is not used from primary training purposes but used to select among models.
+Terrible description, a tuning set is a subset of the training data which is used to observe how the data will "tune" the model.
+When I say "tune" I mean make slight adjustments to the parameters on data the model has not seen yet and see how the hyperparameters effect accuracy.
+
+
+##### Training/Testing Set Evaluation Stratedgies
+
+We first should discuss why using a single training/testing set is not the best option for model evaluation.
+A single training set does not tell us how sensitive accuracy is to a particular training sample.
+A single partition of data into training/testing misses out on several details about the dataset.
+First, if the testing data is too large we get a reliable estimate of accuracy but we have a lower variance estimate.
+If the training data is too large it will be a better representation of the whole distribution.
+As you can see there is this trade off of making one set larger than the other.
+Thus, we must partition the training data
+
+###### Stratedgy 1: Random Resampling
+
+To address the first problem of a lack of variation one should randomly resample their training and testing data using random resampling.
+The process is visualized below.
+![random_resampling](figures/random_resampling.png)
+As you can see, the training and testing data have a fixed size and then we randomly partion the data into the sets.
+However, this process could lead to issues where the distribution is not properly modeled.
+For example, a random partion based on the figure above would be where all of the `+` values are in the test set but none are in the training set leading to a terrible model.
+To address that concern you can apply stratified sampling.
+![stratified_sampling](figures/stratified_sampling.png)
+With stratified sampling, the class porportions are maintined when preforming the partition.
+This preserves the distribution while maintaining the random value selection.
+
+###### Stratedgy 2: Cross Validation
+
+Cross validation is considered to be the industry standard.
+I was doing cross validation in COMP 532, implying that this concept is widely used.
+Let is first visualize it below.
+![cross_validation](figures/cross_validation.png)
+What this does is partition the training data into $n$ equally sized partitions.
+Training on $n-1$ partitions then test using the partition that was left out.
+The most common value of $n$ is usually $10$.
+One could also apply the stratified sampling technique described in the prior subsection.
+This would assure that the distributions of the data would be preserved upon creating the subsets.
+Cross validation makes efficent use of the dataset which is one of the reasons why it is so commonly used.
+It is important to note here that these stratedgies evaluate the **learning method** rather than the hypothesis.
+The last statement is shrouded in abstract terms so to simplify it, we are evaluating training rather than evaluating the model itself.
+As in, these stratedgies are designed to examine how different training data changes the model rather than examining how well the model will do once applied to unseen data.
+
+##### Learning Curves
+
+A learning curve is the accuracy of a method as a function training set size.
+For the learning curve, I made a python script in `utilities/learning_curve_example.py`.
+The script goes over the algorithm and compares a Naive Bayes model and a SVM model.
+The result is below.
+![learning_curve_example](figures/learning_curve_example.png)
+
+
+##### Confusion Matrices and Formalized Metrics
+
+Confusion matrices are a great way to examine model performence per class.
+Below is an example a multi-class confusion matrix.
+![confusion_matrix](figures/confusion_matrix.png)
+The majority of this lecture discusses a 2-class confusion matrix which looks like this.
+![2_class_cm](figures/2_class_cm.png)
+From the above we can now formally define accuracy, recall, precision, error, and false positive rate.
+
+**Accuracy**
+```math
+    Accuracy = \frac{TP+TN}{FP+TP+FN+TN}
+```
+
+**Error**
+```math
+    Error = \frac{FP+FN}{FP+TP+FN+TN}
+```
+
+**Recall**
+```math
+    Recall = \frac{TP}{TP+FN}
+```
+
+**False Positive Rate**
+```math
+    FP\;Rate = \frac{FP}{TP+FP}
+```
+
+**Precision**
+```math
+    Precision = \frac{TP}{TP+FP}
+```
+
+##### ROC Curves
+
+Receiver Operating Characteristic(ROC) curves plot the TP rate(recall) vs the FP-rate.
+The area under the ROC curve is sometimes used to evaluate the model.
+ROC curves can be confusing, what they show is how sensitive the models are.
+Below is a visual of what the curves can look like.
+![ROC_Curve_expected](figures/ROC_Curve_expected.png)
+The **ideal** curve shows what great performence should be you can think of the relationship as $FN=0$.
+For the **alg1** and **alg2** curves, they show different types of patterns an ROC curve could show.
+How the lines look are not that important, how the curve is formulated depends on the confidence of the false postive.
+This isn't that imporant because the confidence of the model could be a result of the data rather than the model.
+How researchers use these curves is by calculating the area under the curve.
+Below is a screenshot from a paper discussing what constitutes a good model.
+![ROC_curve_ranges](figures/ROC_curve_ranges.png)
+A morve curved algorithm, like **alg1**, implies that the locations of the false positives are faily close to one another.
+Whereas a more straight curve, like **alg2**, demonstrate the TP and FP are spread out.
+This means that **alg2** has several false positives after seeing the first one.
+Therefore, what really matters is the AUC as the tabel above suggests.
+The closer the AUC is to 1, the better the model's performence.
+Below is a visual of what the algroithm looks like.
+![ROC_CURVE_VIS](figures/ROC_Curve_example.png)
+
+##### Percision/Recall Curve
+
+The final metric we are going to be discussing is the PR curve. 
+PR curves show the **fraction of predictions** that are false positives.
+At the recall increases, the false positives should decrease.
+This is due to the denomenators of the two have a decreasing relationship.
+All false predictions are either $FP$ or $FN$ being that percision and recall account for them both, as one increases the other will decrease.
+An ideal curve starts at (0,1) and ends at (1,1) indicating that for all thresholds, the percision and recall are at 100% which implies that there are no errors.
+Below is a picture of two curves demonstrating this relationship.
+![pr_cuve](figures/PR_curve_example.png)
