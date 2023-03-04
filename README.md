@@ -152,6 +152,132 @@ Again, with the help of ChatGPT, a hypothesis class is more about boundry creati
 If a boundry is explicitly linear, then the kNN model will have trouble because kNN doesn't draw linear boundries well.
 Therefore, kNN models have a hypothesis bias.
 
+
+### Linear Regression
+
+Linear regression is the concept of finding a function $f$ that maps to a set of points and labels.
+
+#### Setup
+
+For the setup, I am going to be referencing the slide below.
+![LR_setup](figures/LinearRegression_setup.png)
+We are given the usual setup, real-numbered training data with $d$ features, and labels to go with each point.
+Whats new here is the loss function.
+We can rewrite the above function as,
+```math
+    l(f_{\theta}) = \frac{1}{n}||X\theta -y ||^{2}_2
+```
+Where $X$ is a matrix whos rows represent each point in our dataset and $|| * ||^{2}_{2}$ is the $l_2$ norm.
+To optimize this loss function, we need to take the gradient and solve for when the gradient is $0$.
+The work for is below.
+
+![LR_gradient](figures/gradient_lr.png)
+
+Notice how we can actually represent $\theta$ as an equation.
+This formal definition means that training $\theta$ is simple.
+However there is a caveat, **not all matricies are invertable**.
+Meaning we have to account for the case when the matrix cannot be inverted.
+This lack of inversion is actually more common then you may think.
+Most datasets are actually not invertable by default meaning that it is more common to see the next forms of linear regression than the original.
+
+##### Ridge Regression
+
+The first regression type on our list is ridge regression.
+Ridge regression has a loss function defined below.
+
+![ridge_loss](figures/ridge_regression.png)
+
+When we solve for $\theta$ now we get,
+
+![ridge_theta](figures/theta_ridge.png)
+
+Notice the $\lambda n I$ term.
+All matricies are invertable when sumed with the identity matrix.
+The reasoning for why the previous sentence is true is not needed to understand ridge regression's purpose.
+Because the matrix is invertable, $\theta$ will always exist.
+
+The natural question then becomes, how should one pick $\lambda$?
+Normally, you would pick $\lambda$ during the cross validation phase.
+Algorithmically changing it so that it minimizes the loss function. 
+
+Ridge regression's **main goal stated in the slides is actually to prevent large weights**.
+Making the matrix invertable may be an after thought for these lectures, but always having a inveratble matrix is a very important component of the ridge regression as well.
+
+##### LASSO: The Weird Brother To Ridge Regression
+
+LASSO looks very similar to ridge at first glance.
+Equation below defines LASSO as,
+
+![LASSO_eq](figures/LASSO_eq.png)
+
+The only difference is that we are now using the $l_1$ norm.
+As I said earlier, at a glance there doesn't seem to be a big difference.
+However, there is: **LASSO has no closed form solution**.
+Which means that the gradient has many possible solutions.
+We will discuss how to work with this later in this section.
+
+The **goal** of LASSO is to encourage *spase* soultions, meaning $\theta$ will contain more zeros.
+With more zeros means more sparsity in the solutions to $f_{\theta}$.
+
+##### Evaluating Linear Regression Models
+
+There are several metrics we can look to when evaluating linear regression models.
+We will start with **R-squared** which is defined as,
+
+```math 
+    R^2 = 1 - \frac{\sum_j (y^j - f_{\theta}(x^i))^2}{\sum_j(y^j - \bar{y})^2}
+```
+
+Where $\bar{y}$ is the emperhical mean of the labels.
+R-squared tells us how much variance in $y$ is predictable by $x$. 
+
+The next is **MSE** which is mean squared error.
+There is also **RMSE** which is the same thing as MSE except you just take the root of the MSE.
+These tell us how far in euclidean space the predicted value is from the actual.
+
+There is also the **MAE** which is the mean average error.
+This tells us the average error over all predictions.
+MAE will likely tell is the same thing as MSE but with out squaring the error furst.
+
+##### Gradient Descent for Linear Regression
+
+We are finally discussing gradient descent.
+Boy am I excited.
+Below summarizes gradient desecent quite well.
+
+![gd_simmary](figures/gd_summary.png)
+
+The goal is to optimize $g(\theta)$, as we saw earlier when dealing with ridge regression, we can take the gradient to optimize the parameters.
+However, rather than just setting the equation equal to zero, gradient desecent is an iterative method that goes until you say stop.
+The general idea of gradient descent is to iteratively find a minimum without solving for zero.
+There are several equations in machine learning that do not have a gradient that exists at zero.
+Thus, the iterative method is the only way to minimize $g(\theta)$.
+Gradient descent is one of the most widely adopted concepts in machine learning.
+It opened the flood gates for several loss functions to be viable without needing the function to be continous.
+If that last sentence did not make sense, **continuous** means that the function exists for all points, and the function has a derivative at every point.
+Below is the gradient descent equation for linear regression.
+
+![gd_lr](figures/gd_lr.png)
+
+Gradient descent is actually faster.
+Inverting a giant matrix is actually a very difficult task for a computer to do.
+For example, inverting a square $m$ x $m$ has a compelxity of $m^3$.
+Gradient descent, on the other hand, has a compexity of $dnt$ where $d$ is number of features in $X$, $n$ is how many points there are, and $t$ is how many epochs or gradient descent iters you evaluate.
+Thus, gradient descent is much faster on average especially for large datasets.
+
+So what are the drawback of gradient descent(GD)?
+There are a couple, to take the GD you need to have a **convex function**.
+How do we define a convex function?
+The figure below is a good starting point.
+
+![convexity_chart](figures/convexity_chart.png)
+
+The above figure is a fancy way of saying that the function must have a local minima between two points.
+The figure straight up says that you must be able to draw a line from $x_1$ to $x_2$ and all points of the function must be below that line.
+
+### Logistic Regression
+
+
 ## Concepts
 
 #### Unsupervised Learning
@@ -428,3 +554,7 @@ All false predictions are either $FP$ or $FN$ being that percision and recall ac
 An ideal curve starts at (0,1) and ends at (1,1) indicating that for all thresholds, the percision and recall are at 100% which implies that there are no errors.
 Below is a picture of two curves demonstrating this relationship.
 ![pr_cuve](figures/PR_curve_example.png)
+
+#### Maximum Likelihood Estimation
+
+A likelihood function captures the probability of seeing some data as a function of model parameters.
