@@ -558,3 +558,23 @@ Below is a picture of two curves demonstrating this relationship.
 #### Maximum Likelihood Estimation
 
 A likelihood function captures the probability of seeing some data as a function of model parameters.
+This is weird and took me a ChatGPT conversation to really understand what it means.
+A likelihood function determines how well some parameters model a given dataset.
+When you want to maximize of a set of parameters, the liklihood function's peaks tell you which parameters best model the distribution of the dataset.
+If you are able to find parameters that model the dataset well, then the parameters that you have found will become your predictor function.
+There are two examples that I will use to attempt to explain this: a uniform distribution and a normal distribution.
+
+The uniform distribution will have a likelihood function that looks like,
+$$
+    L(\theta;X) = \prod_j{p_{\theta}(x_j)}
+$$
+
+Where $X$ is a dataset that is distributed uniformally, $p_{\theta}(x_j)$ is the probability of event $x_j$ given parameters $\theta$.
+Let us think about this result, a uniform distribution is can be defined as a set of events where all of the events are equally likely.
+Given a set of parameters $\theta$ the is the product of the events happening within $\theta$ if $x_j$ is outside of the realm of possibility of $\theta$ then the whole product turns to zero.
+Thus, if $\theta$ can describe the entirety of the $X$ the likelhood function will return a non-zero value.
+An example of this can be found in `utilities/likelihood_function_example_uniform.py`.
+
+
+The normal distribution example can be found in the `utilities/likelihood_function_example.py` script.
+When given a set of points over a normal distribution, the likelihood function will find the values of $\mu$ and $\sigma$ of the unknown normal distribution.
