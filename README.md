@@ -277,6 +277,33 @@ The figure straight up says that you must be able to draw a line from $x_1$ to $
 
 ### Logistic Regression
 
+After a grueling time with the likelihood estimator, we can start discussing logistic regression.
+If you are unfamiliar with the likelihood estimator, I would highly encourage you to read that section under concepts.
+We define the logistice distribution as,
+
+![log_reg_eq](figures/log_reg_eq.png)
+
+Which has a conditional distribution defined as,
+
+![log_reg_cond](figures/log_reg_cond.png)
+
+We define the loss of the log likelihood estimation as 
+
+$$
+    log\;likelihood(\theta|x^i,y^i) = log(P_{\theta}(y^i,x^i))
+$$
+
+Thus, the optimization problem becomes,
+
+![log_reg_opt](figures/log_reg_opt.png)
+
+So, with all of the above, whats the big deal with logistic regression?
+
+1. It is bounded on $(0,1)$
+2. Its symmetric, $1 - \sigma(z) = \sigma(-z)$
+3. Its gradient is super easy, $\sigma^{`}(z) = \sigma(z)(1-\sigma(z))$
+
+I included an example logistic regression file in `logistic_regression/lr.py`.
 
 ## Concepts
 
@@ -578,3 +605,6 @@ An example of this can be found in `utilities/likelihood_function_example_unifor
 
 The normal distribution example can be found in the `utilities/likelihood_function_example.py` script.
 When given a set of points over a normal distribution, the likelihood function will find the values of $\mu$ and $\sigma$ of the unknown normal distribution.
+
+Now with this understanding, we can finally define the maximum likelihood as, 
+![likelihood_eq](figures/likelihood_eq.png)
