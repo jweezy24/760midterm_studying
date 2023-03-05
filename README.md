@@ -305,6 +305,81 @@ So, with all of the above, whats the big deal with logistic regression?
 
 I included an example logistic regression file in `logistic_regression/lr.py`.
 
+
+### Naive Bayes
+
+Naive Bayes assumes that features are **conditionally independent**.
+Let us define conditional independence before continuing.
+Formally, let us say there are three probability distributions, $A$, $B$, and $C$.
+$A$ and $B$ are conditionally independent if $P(A,B | C) = P(A|C)*P(B|C)$.
+Intuitively, $C$'s existence "blocks" all influence between $A$ and $B$.
+
+Below is a good visualization of Naive Bayes' overall model.
+![nb_model](figures/naive_bayes_model.png)
+
+This one took awhile, there is a lot of details we need to discuss before continuing.
+If you don't care about the details and just want some code, I wrote a naive bayes model from scratch in the file `naive_bayes/nb.py`.
+Check that out and if you are still confused come back here.
+
+Let me break down the picture above in a simpler way.
+There is a huge difference between $P(X)$ and $p(x)$ where $X$ is a distribution and $x\in X$.
+$P(X)$ is the probability mass function(PMS) of the distribution.
+This is a very key component to understanding the code and what the hell this picture is saying.
+
+We will walk through the image above using an example and explaining each component of the image.
+
+**Example Problem**
+We have an entire set of athletes $A$ and each athlete has the features (age,sex,height,weight) and a set of labels $Y$ that assigns each player a sport.
+Our model is a naive bayes classifier $h(a)$ where $a\in A$ predicts what sport an athlete plays.
+
+$P(X_k|Y)$ is saying, given $Y$ what is the probability distribution for the $k$th feature in $X$.
+In simpler terms, it is saying what does each feature of $X$ look like for the class they are assigned too.
+For example, lets look at $P(A_k|Y)$ where $Y=$ **basketball** and $k=$**height**, the likely height of a basketball player is likely a number over 6ft.
+We do that for all classes and features for each point in our training set.
+
+The actual formulation of the model requires us to understand one quick math rule $log(a*b) = log(a)+log(b)$.
+With that rule in mine, if we apply log to the model, we get $\sum_{y\in Y}((P(y)) + \sum_{k=1}^K P(X_k|y))$.
+This looks weird but we are just simplifying the equation in by applying log to the product.
+Which is why the code looks the way that it does when you read it.
+
+Training is easier than it sounds, all you have to do is find the likelihood of a value for each class for each feature.
+We will list each step below:
+1. Separate points by their label.
+2. Calculate $P(Y) = \frac{|X_Y|}{|X|}$ where $X_Y$ are the sets of points divided up by label and $|X_Y|$ represents how many points are within that set. This value is the prior of $Y$.
+3. Calculate the mean and variance for each feature within the class. See code for how to do this.
+
+Great, we just trained the model!
+The confusing part is the prediction methodology.
+If you are unfamiliar with probability this part will be confusing.
+It was for me and I took an advanced probability course.
+You have been warned.
+For our prediction algorithm we need to pick a distribution to base our PMF on.
+If you don't know, use a Gaussian or normal distribution.
+You can also do some likely hood estimates over multiple distributions to see which works the best but for simplicity I will be using a Gaussian distribution for the rest of the explanation.
+The Gaussian PMF is defined below,
+```math
+    P(X) = \frac{e^{-\frac{(X-\mu)^2}{4*\sigma^2}} }{\sqrt{2\pi\sigma}}
+```
+Where $X$ is a normal distribution, $\sigma$ is the variance of $X$, and $\mu$ is the mean of $X$.
+For more information about where that comes from you're going to need to have to find it somewhere else because I honestly don't have the time to go over the derivation it is not straight-forward.
+If you trust me then we can move on.
+
+With the PMF defined, predictions are as follows:
+1. Find the likelihood of a label of a point by looking at the likelihood of each feature given the priors we computed earlier. Likelihood refers to calculating the PMF over each feature for the normal distribution.
+2. Take the log of all results and some the results with the log of the prior.
+3. After doing that for each class, find the class with the highest sum.
+4. Return that class.
+
+Please look at the python example for any questions.
+
+There is one last concept we need to discuss and that is **smoothing**.
+If you're smarter than me, you may have noticed this algorithm fails the training data is missing a class from the class list.
+Referring back to our sports example, if we do not have any data for professional bowlers, then our model will not be able to classify athletes that bowl.
+However, our model can account for what it doesn't know with smoothing.
+If we add a constant to all priors of the classes we can still account for things we have not seen if we know they will show up.
+
+
+
 ## Concepts
 
 #### Unsupervised Learning
@@ -639,16 +714,49 @@ The equation is below,
 ```
 I wrote some code as an example calculation in the file `utilities/softmax_calc.py`.
 
-#### Discriminative Models
+#### Discriminative Models and Generative Models
 
-These are what people are usually first exposed to when learning about machine learning.
+Discriminative models are what people are usually first exposed to when learning about machine learning.
 These are the predictive models.
 When given features, these bad boys will produce a label.
 Examples of this model are linear and logistic regression.
 
-
-#### Generative Models
-
-All my NLP homies love these.
+All my NLP homies love generative models.
 These models can be either supervised or unsupervised.
-ddd 
+The goal of these models is to return how the data was generated.
+These model $p(x)$ for an element rather than a label.
+
+Below is a good table discussing the differences between the two.
+![gen_vs_dis](figures/gen_vs_dis.png)
+
+Notice how both generative and discriminative models utilize MLE and MAP to estimate model parameters.
+
+#### Bayesian Inference
+
+This will be more of a probability concept that we will apply in Naive Bayes models.
+Therefore, this section is important a particular model.
+Let us first establish some terminology,
+
+```math
+    P(H|E) = \frac{P(E|H)P(H)}{P(E)}
+```
+
+Where **$H$ is the hypothesis** and **$E$ is the evidence**.
+We call $P(H)$ in the numerator the **prior**.
+The prior is the estimate of the probability without evidence.
+Next is the $P(E|H)$ in the numerator, this is the **likelihood**, which means the probability of evidence given a hypothesis.
+Finally, we have the **posterior** which the $P(H|E)$ in our equation.
+The posterior is the probability of the hypothesis given evidence.
+
+#### Maximum a Posteriori (MAP) Estimation
+
+MAP estimation is a statistical thing used to estimate the most likely values of model parameters given some observed data and a prior distribution.
+In machine learning, we treat the parameters of a model as random variables with a *prior* distribution.
+Learning can then be defined in the terms of Bayesian Inference,
+```math
+    P(\theta|X) = \frac{P(X|\theta)P(\theta)}{P(X)}
+```
+From the above equation, we can define MAP estimation formally as,
+```math
+    \theta^{MAP} = \argmax \prod_{i=1}^n p(x^i|\theta)p(\theta)
+```
