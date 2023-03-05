@@ -13,7 +13,7 @@ Located in the `/dtrees` folder, is the algorithm for decision trees.
 The above visualization demonstrates how the algorithm works at a high level.
 Each node that is not a leaf node has a **split condition**.
 These split conditions split the data set on a single feature based on a single bound.
-These splits are deteremined using the **information gain ratio**(IGR).
+These splits are determined using the **information gain ratio**(IGR).
 To define IGR we first need to define **entropy** which is,
 ```math
     H(x) := -\sum_{x\in X} p(x) \log_2(p(x))\\
@@ -27,7 +27,7 @@ The information gain(IG) can now be defined below.
 ```math
     IG(Y,X) = H(Y) - H(Y|X)
 ```
-So what this is saying intuitively is IG is the difference between the entropy of the even occuring over the data set and the entropy of the event happening when another event occurs.
+So what this is saying intuitively is IG is the difference between the entropy of the even occurring over the data set and the entropy of the event happening when another event occurs.
 Lets work through this example below,
 ![dtree_alg](figures/entropy_example.png)
 First we calculate, 
@@ -36,7 +36,7 @@ First we calculate,
     = (0.5(\log(0.5))) + (0.25(\log(0.25))) + (0.125(\log(0.125))) + (0.125(\log(0.125))) \\
     = 1.75
 ```
-Next we calcuate,
+Next we calculate,
 ```math
     H(Y|X) = -\sum_{x\in X}\sum_{y\in Y} p(x,y) \log(p(y|x))\\
     = 1.5
@@ -47,7 +47,7 @@ This again, is very annoying because the **conditional entropy is defined differ
 As we can see from the equations above.
 To get the result you have to apply Bayes rule to redefine the conditional within the log to be a product of the joint probabilities divided by the probability of $x$.
 
-We can now finally define the IGR we discussed erlier.
+We can now finally define the IGR we discussed earlier.
 ```math
     IGR(X,Y) = \frac{IG(X,Y)}{H(Y)} 
 ```
@@ -55,7 +55,7 @@ Finally we have a formal definition of IGR.
 
 ![dtree_alg](figures/dtree_algorithm.png)
 Now that we have IGR we can walk through the decision tree algorithm.
-The canidate splits are determined by the highest IGR when selecting a point to be conditioned over.
+The candidate splits are determined by the highest IGR when selecting a point to be conditioned over.
 The stopping criteria will be when the IGR is zero or when the set of training instances is empty.
 A leaf node will delegate a label once a testing sample is ran through the dtree.
 Finding the best split is just using the maximal IGR we determined from when making $C$.
@@ -68,7 +68,7 @@ For the final note on dtrees, let us describe the inductive bias.
 The **hypothesis space bias** is the decision tree algorithms favor trees with single features, axis parallel splits.
 What this means is that the algorithm will tend toward designing models that are focused in a single dimension and place splits in parallel.
 We can think about it as Dtrees are tend towards dividing up spaces with straight lines through where the lines are defined only in a single dimension.
-The **preference bias** is indicitive of small trees identified by greedy search.
+The **preference bias** is indicative of small trees identified by greedy search.
 This means that the dtree algorithm will tend to try and make smaller trees with the greedy search algorithm.
 
 
@@ -82,8 +82,8 @@ As we can see, the regions around each determine which points will share that la
 A little confusing but the idea here is that **a point is classified based on the closest point(when $k=1$).**
 
 When $k>1$ we actually determine class based on the k nearest points.
-For example, if $k=2$ we look at the 2 closest points and determin the label by the class that occurs the most frequently.
-As you may have infered, ties can occur.
+For example, if $k=2$ we look at the 2 closest points and determine the label by the class that occurs the most frequently.
+As you may have inferred, ties can occur.
 To solve this problem use an odd number for $k$ this solution will only work if there are only two classes.
 If there are more than two classes than a tie can still occur.
 Usually, if there is a tie, default to the closest point.
@@ -135,21 +135,21 @@ They are weak to irrelevant features.
 **Weaknesses**
 1. Sensitive to irrelevant features (see image above)
 2. Prediction stage can be expensive
-3. No "model" to interperet 
+3. No "model" to interpret 
 
-The **Inductive Bias** is defined as assumptions a learner uses to predict a label $y$ for a previosuly unseen instance $x_i$.
+The **Inductive Bias** is defined as assumptions a learner uses to predict a label $y$ for a previously unseen instance $x_i$.
 There are two components that make up inductive bias: **hypothesis space bias** and **preference bias**.
 **Preference Bias** specifies a preference ordering within the space of models.
-**Hypothesis Space Bias** determins the models that can be represented.
+**Hypothesis Space Bias** determines the models that can be represented.
 These definitions at face value are not good.
 To simplify these abstract definitions, inductive bias is a set of assumptions that a machine learning algorithm makes about the relationship between the input and output data based on the training data.
 Our preference bias is then defined by the neighborhoods seen in training data.
 ChatGPT gave me a great example to explain this intuitively.
-Imagine training a classifier based on movie reccomendations, if I prefer action movies, my training data will have a preference bias towards action movies.
+Imagine training a classifier based on movie recommendations, if I prefer action movies, my training data will have a preference bias towards action movies.
 Therefore, someone who does not enjoy action movies will have a less accurate rating prediction than me.
 Hypothesis classes are actually a little easier to grasp.
-Again, with the help of ChatGPT, a hypothesis class is more about boundry creation.
-If a boundry is explicitly linear, then the kNN model will have trouble because kNN doesn't draw linear boundries well.
+Again, with the help of ChatGPT, a hypothesis class is more about boundary creation.
+If a boundary is explicitly linear, then the kNN model will have trouble because kNN doesn't draw linear boundaries well.
 Therefore, kNN models have a hypothesis bias.
 
 
@@ -167,7 +167,7 @@ We can rewrite the above function as,
 ```math
     l(f_{\theta}) = \frac{1}{n}||X\theta -y ||^{2}_2
 ```
-Where $X$ is a matrix whos rows represent each point in our dataset and $|| * ||^{2}_{2}$ is the $l_2$ norm.
+Where $X$ is a matrix whose rows represent each point in our dataset and $|| * ||^{2}_{2}$ is the $l_2$ norm.
 To optimize this loss function, we need to take the gradient and solve for when the gradient is $0$.
 The work for is below.
 
@@ -175,10 +175,10 @@ The work for is below.
 
 Notice how we can actually represent $\theta$ as an equation.
 This formal definition means that training $\theta$ is simple.
-However there is a caveat, **not all matricies are invertable**.
+However there is a caveat, **not all matrices are invertible**.
 Meaning we have to account for the case when the matrix cannot be inverted.
 This lack of inversion is actually more common then you may think.
-Most datasets are actually not invertable by default meaning that it is more common to see the next forms of linear regression than the original.
+Most datasets are actually not invertible by default meaning that it is more common to see the next forms of linear regression than the original.
 
 ##### Ridge Regression
 
@@ -192,16 +192,16 @@ When we solve for $\theta$ now we get,
 ![ridge_theta](figures/theta_ridge.png)
 
 Notice the $\lambda n I$ term.
-All matricies are invertable when sumed with the identity matrix.
+All matrices are invertible when summed with the identity matrix.
 The reasoning for why the previous sentence is true is not needed to understand ridge regression's purpose.
-Because the matrix is invertable, $\theta$ will always exist.
+Because the matrix is invertible, $\theta$ will always exist.
 
 The natural question then becomes, how should one pick $\lambda$?
 Normally, you would pick $\lambda$ during the cross validation phase.
 Algorithmically changing it so that it minimizes the loss function. 
 
 Ridge regression's **main goal stated in the slides is actually to prevent large weights**.
-Making the matrix invertable may be an after thought for these lectures, but always having a inveratble matrix is a very important component of the ridge regression as well.
+Making the matrix invertible may be an after thought for these lectures, but always having a invertible matrix is a very important component of the ridge regression as well.
 
 ##### LASSO: The Weird Brother To Ridge Regression
 
@@ -216,7 +216,7 @@ However, there is: **LASSO has no closed form solution**.
 Which means that the gradient has many possible solutions.
 We will discuss how to work with this later in this section.
 
-The **goal** of LASSO is to encourage *spase* soultions, meaning $\theta$ will contain more zeros.
+The **goal** of LASSO is to encourage *sparse* solutions, meaning $\theta$ will contain more zeros.
 With more zeros means more sparsity in the solutions to $f_{\theta}$.
 
 ##### Evaluating Linear Regression Models
@@ -228,7 +228,7 @@ We will start with **R-squared** which is defined as,
     R^2 = 1 - \frac{\sum_j (y^j - f_{\theta}(x^i))^2}{\sum_j(y^j - \bar{y})^2}
 ```
 
-Where $\bar{y}$ is the emperhical mean of the labels.
+Where $\bar{y}$ is the empirical mean of the labels.
 R-squared tells us how much variance in $y$ is predictable by $x$. 
 
 The next is **MSE** which is mean squared error.
@@ -237,23 +237,23 @@ These tell us how far in euclidean space the predicted value is from the actual.
 
 There is also the **MAE** which is the mean average error.
 This tells us the average error over all predictions.
-MAE will likely tell is the same thing as MSE but with out squaring the error furst.
+MAE will likely tell is the same thing as MSE but with out squaring the error first.
 
 ##### Gradient Descent for Linear Regression
 
 We are finally discussing gradient descent.
 Boy am I excited.
-Below summarizes gradient desecent quite well.
+Below summarizes gradient descent quite well.
 
-![gd_simmary](figures/gd_summary.png)
+![gd_summary](figures/gd_summary.png)
 
 The goal is to optimize $g(\theta)$, as we saw earlier when dealing with ridge regression, we can take the gradient to optimize the parameters.
-However, rather than just setting the equation equal to zero, gradient desecent is an iterative method that goes until you say stop.
+However, rather than just setting the equation equal to zero, gradient descent is an iterative method that goes until you say stop.
 The general idea of gradient descent is to iteratively find a minimum without solving for zero.
 There are several equations in machine learning that do not have a gradient that exists at zero.
 Thus, the iterative method is the only way to minimize $g(\theta)$.
 Gradient descent is one of the most widely adopted concepts in machine learning.
-It opened the flood gates for several loss functions to be viable without needing the function to be continous.
+It opened the flood gates for several loss functions to be viable without needing the function to be continuos.
 If that last sentence did not make sense, **continuous** means that the function exists for all points, and the function has a derivative at every point.
 Below is the gradient descent equation for linear regression.
 
@@ -261,8 +261,8 @@ Below is the gradient descent equation for linear regression.
 
 Gradient descent is actually faster.
 Inverting a giant matrix is actually a very difficult task for a computer to do.
-For example, inverting a square $m$ x $m$ has a compelxity of $m^3$.
-Gradient descent, on the other hand, has a compexity of $dnt$ where $d$ is number of features in $X$, $n$ is how many points there are, and $t$ is how many epochs or gradient descent iters you evaluate.
+For example, inverting a square $m$ x $m$ has a complexity of $m^3$.
+Gradient descent, on the other hand, has a complexity of $dnt$ where $d$ is number of features in $X$, $n$ is how many points there are, and $t$ is how many epochs or gradient descent iters you evaluate.
 Thus, gradient descent is much faster on average especially for large datasets.
 
 So what are the drawback of gradient descent(GD)?
@@ -279,7 +279,7 @@ The figure straight up says that you must be able to draw a line from $x_1$ to $
 
 After a grueling time with the likelihood estimator, we can start discussing logistic regression.
 If you are unfamiliar with the likelihood estimator, I would highly encourage you to read that section under concepts.
-We define the logistice distribution as,
+We define the logistic distribution as,
 
 ![log_reg_eq](figures/log_reg_eq.png)
 
@@ -310,7 +310,7 @@ I included an example logistic regression file in `logistic_regression/lr.py`.
 #### Unsupervised Learning
 This is the idea that a dataset does not have any labels for its training data.
 There are less formalities with this type of machine learning.
-I don't know if that is applied through the entire study but this lecutre does not take equal amount of time to define this type of learning.
+I don't know if that is applied through the entire study but this lecture does not take equal amount of time to define this type of learning.
 
 ##### Setup
 
@@ -319,16 +319,16 @@ $$
 \{x^1,x^2,...,x^n\}
 $$
 The **goal** is to discover interesting regularities/structures/patterns that characterize the instances.
-For example, clustering, anomoly detection, and dimensionality reduction all fall under unsupervised learning.
+For example, clustering, anomaly detection, and dimensionality reduction all fall under unsupervised learning.
 To paraphrase a bit, unsupervised learning is designed for pattern identification with a lack of labels.
 
 ##### Clustering
 
 The goal for clustering is to model *h* such that it divides training set into clusters with intra-cluster similarity amd inter-cluster dissimilarity.
 To paraphrase again, the goal is to group *close* points and separate *far* points.
-You may be asking yourself, how do you define distance for points where there is no clear definition of distnace?
+You may be asking yourself, how do you define distance for points where there is no clear definition of distance?
 Well, there are many ways, one can project points with no sense of distances into a space where distance is defined.
-Or as my professor put it, just don't use the clusering algorithms.
+Or as my professor put it, just don't use the clustering algorithms.
 
 ![cluster](figures/clustering_example.png)
 
@@ -338,9 +338,9 @@ Above is a visualization of the concepts discussed.
 ##### Anomaly Detection
 
 The goal of anomaly detection is to detect anomalies.
-Yes I know riviting.
+Yes I know riveting.
 But this problem is actually harder than it sounds.
-Although simple to define what the goal is, defining what an anomoly is depends completely on the space you are working in.
+Although simple to define what the goal is, defining what an anomaly is depends completely on the space you are working in.
 An anomaly for a signal processing problem will look completely different than a computer vision anomaly.
 Defining the anomaly to a computer is the most difficult component.
 
@@ -350,7 +350,7 @@ The goal for dimensionality reduction is to find patterns in lower dimensional f
 In other words to detect correlations between lower dimensions within the dataset.
 This concept again is harder than it sounds.
 A easy example for those who know about it is **PCA** or Principal Component Analysis.
-PCA defines what deminsions have the most information about the data.
+PCA defines what dimensions have the most information about the data.
 I do not want to get into the definition here as this is a high level overview but the point is that it accomplishes the goal of dimensionality reduction which is find lower dimensional patterns within a dataset.
 
 
@@ -376,9 +376,9 @@ $Y$ can also have more than two possibilities, we can think of cases where $Y$ h
 
 ##### Classification Vs. Regression
 
-Classification extracts labels from a finite set of possiblities.
+Classification extracts labels from a finite set of possibilities.
 Regression, on the other hand, can have an infinite number of possible outputs.
-Classification's goal is to determine a point's class where as the goal of regression is to map a set of points to a continouous function.
+Classification's goal is to determine a point's class where as the goal of regression is to map a set of points to a continuous function.
 
 ##### Hypothesis Class
 
@@ -388,7 +388,7 @@ What people do is they pick a subclass of and attempt to work within that smalle
 This subclass may still be infinite but due to the restriction on the type of function we are allowed within the subclass it makes finding said function easier.
 
 Let $h_{\theta}(x) = \sum_{\theta_i \in h_{\theta}}{\theta_i x_i} $, $h_{\theta}$ is a linear subclass of the hypothesis class.
-$h_{\theta}$ is simplier because we can control the amount of parameters and nothing special is applied to $x$.
+$h_{\theta}$ is simpler because we can control the amount of parameters and nothing special is applied to $x$.
 $\theta_i$ is a weight and $x_i$ is a feature. 
 
 ##### Types of Training
@@ -424,7 +424,7 @@ Intuitively this makes sense, the total error being low does imply that the mode
 #### Occam's Razor
 Why is this a machine learning concept?
 Well, the translated phrase is "**Entities should not be multiplied beyond necessity.**"
-Further translation, "**When you have two competing threories that make the same prediction the simpler one is better.**"
+Further translation, "**When you have two competing theories that make the same prediction the simpler one is better.**"
 This concept is applied to **decision tree learning** because the central hypothesis is, "the simplest tree that classifies the training stances accurately will generalize."
 So how does Occam's razor apply?
 Well, there are fewer small sized trees than long ones.
@@ -453,7 +453,7 @@ Thus it is a great example of overfitting.
 
 To describe the general phenomenon further, there is another figure from the slides.
 ![dtree_overfitting](figures/capacity_chart_overfitting.png)
-Above is shows the optimal capacity is the boundry of the overfitting zone.
+Above is shows the optimal capacity is the boundary of the overfitting zone.
 It is the moment that the model begins to overfit to the training data.
 
 #### Evaluation Metrics
@@ -467,7 +467,7 @@ Terrible description, a tuning set is a subset of the training data which is use
 When I say "tune" I mean make slight adjustments to the parameters on data the model has not seen yet and see how the hyperparameters effect accuracy.
 
 
-##### Training/Testing Set Evaluation Stratedgies
+##### Training/Testing Set Evaluation Strategies
 
 We first should discuss why using a single training/testing set is not the best option for model evaluation.
 A single training set does not tell us how sensitive accuracy is to a particular training sample.
@@ -477,20 +477,20 @@ If the training data is too large it will be a better representation of the whol
 As you can see there is this trade off of making one set larger than the other.
 Thus, we must partition the training data
 
-###### Stratedgy 1: Random Resampling
+###### Strategy 1: Random Resampling
 
 To address the first problem of a lack of variation one should randomly resample their training and testing data using random resampling.
 The process is visualized below.
 ![random_resampling](figures/random_resampling.png)
-As you can see, the training and testing data have a fixed size and then we randomly partion the data into the sets.
+As you can see, the training and testing data have a fixed size and then we randomly partition the data into the sets.
 However, this process could lead to issues where the distribution is not properly modeled.
-For example, a random partion based on the figure above would be where all of the `+` values are in the test set but none are in the training set leading to a terrible model.
+For example, a random partition based on the figure above would be where all of the `+` values are in the test set but none are in the training set leading to a terrible model.
 To address that concern you can apply stratified sampling.
 ![stratified_sampling](figures/stratified_sampling.png)
-With stratified sampling, the class porportions are maintined when preforming the partition.
+With stratified sampling, the class proportions are maintained when preforming the partition.
 This preserves the distribution while maintaining the random value selection.
 
-###### Stratedgy 2: Cross Validation
+###### Strategy 2: Cross Validation
 
 Cross validation is considered to be the industry standard.
 I was doing cross validation in COMP 532, implying that this concept is widely used.
@@ -501,10 +501,10 @@ Training on $n-1$ partitions then test using the partition that was left out.
 The most common value of $n$ is usually $10$.
 One could also apply the stratified sampling technique described in the prior subsection.
 This would assure that the distributions of the data would be preserved upon creating the subsets.
-Cross validation makes efficent use of the dataset which is one of the reasons why it is so commonly used.
-It is important to note here that these stratedgies evaluate the **learning method** rather than the hypothesis.
+Cross validation makes efficient use of the dataset which is one of the reasons why it is so commonly used.
+It is important to note here that these strategies evaluate the **learning method** rather than the hypothesis.
 The last statement is shrouded in abstract terms so to simplify it, we are evaluating training rather than evaluating the model itself.
-As in, these stratedgies are designed to examine how different training data changes the model rather than examining how well the model will do once applied to unseen data.
+As in, these strategies are designed to examine how different training data changes the model rather than examining how well the model will do once applied to unseen data.
 
 ##### Learning Curves
 
@@ -517,7 +517,7 @@ The result is below.
 
 ##### Confusion Matrices and Formalized Metrics
 
-Confusion matrices are a great way to examine model performence per class.
+Confusion matrices are a great way to examine model performance per class.
 Below is an example a multi-class confusion matrix.
 ![confusion_matrix](figures/confusion_matrix.png)
 The majority of this lecture discusses a 2-class confusion matrix which looks like this.
@@ -556,38 +556,38 @@ The area under the ROC curve is sometimes used to evaluate the model.
 ROC curves can be confusing, what they show is how sensitive the models are.
 Below is a visual of what the curves can look like.
 ![ROC_Curve_expected](figures/ROC_Curve_expected.png)
-The **ideal** curve shows what great performence should be you can think of the relationship as $FN=0$.
+The **ideal** curve shows what great performance should be you can think of the relationship as $FN=0$.
 For the **alg1** and **alg2** curves, they show different types of patterns an ROC curve could show.
-How the lines look are not that important, how the curve is formulated depends on the confidence of the false postive.
-This isn't that imporant because the confidence of the model could be a result of the data rather than the model.
+How the lines look are not that important, how the curve is formulated depends on the confidence of the false positive.
+This isn't that important because the confidence of the model could be a result of the data rather than the model.
 How researchers use these curves is by calculating the area under the curve.
 Below is a screenshot from a paper discussing what constitutes a good model.
 ![ROC_curve_ranges](figures/ROC_curve_ranges.png)
-A morve curved algorithm, like **alg1**, implies that the locations of the false positives are faily close to one another.
+A more curved algorithm, like **alg1**, implies that the locations of the false positives are fairly close to one another.
 Whereas a more straight curve, like **alg2**, demonstrate the TP and FP are spread out.
 This means that **alg2** has several false positives after seeing the first one.
-Therefore, what really matters is the AUC as the tabel above suggests.
-The closer the AUC is to 1, the better the model's performence.
-Below is a visual of what the algroithm looks like.
+Therefore, what really matters is the AUC as the table above suggests.
+The closer the AUC is to 1, the better the model's performance.
+Below is a visual of what the algorithm looks like.
 ![ROC_CURVE_VIS](figures/ROC_Curve_example.png)
 
-##### Percision/Recall Curve
+##### Precision/Recall Curve
 
 The final metric we are going to be discussing is the PR curve. 
 PR curves show the **fraction of predictions** that are false positives.
 At the recall increases, the false positives should decrease.
-This is due to the denomenators of the two have a decreasing relationship.
-All false predictions are either $FP$ or $FN$ being that percision and recall account for them both, as one increases the other will decrease.
-An ideal curve starts at (0,1) and ends at (1,1) indicating that for all thresholds, the percision and recall are at 100% which implies that there are no errors.
+This is due to the denominators of the two have a decreasing relationship.
+All false predictions are either $FP$ or $FN$ being that precision and recall account for them both, as one increases the other will decrease.
+An ideal curve starts at (0,1) and ends at (1,1) indicating that for all thresholds, the precision and recall are at 100% which implies that there are no errors.
 Below is a picture of two curves demonstrating this relationship.
-![pr_cuve](figures/PR_curve_example.png)
+![pr_curve](figures/PR_curve_example.png)
 
 #### Maximum Likelihood Estimation
 
 A likelihood function captures the probability of seeing some data as a function of model parameters.
 This is weird and took me a ChatGPT conversation to really understand what it means.
 A likelihood function determines how well some parameters model a given dataset.
-When you want to maximize of a set of parameters, the liklihood function's peaks tell you which parameters best model the distribution of the dataset.
+When you want to maximize of a set of parameters, the likelihood function's peaks tell you which parameters best model the distribution of the dataset.
 If you are able to find parameters that model the dataset well, then the parameters that you have found will become your predictor function.
 There are two examples that I will use to attempt to explain this: a uniform distribution and a normal distribution.
 
@@ -596,10 +596,10 @@ $$
     L(\theta;X) = \prod_j{p_{\theta}(x_j)}
 $$
 
-Where $X$ is a dataset that is distributed uniformally, $p_{\theta}(x_j)$ is the probability of event $x_j$ given parameters $\theta$.
+Where $X$ is a dataset that is distributed uniformly, $p_{\theta}(x_j)$ is the probability of event $x_j$ given parameters $\theta$.
 Let us think about this result, a uniform distribution is can be defined as a set of events where all of the events are equally likely.
 Given a set of parameters $\theta$ the is the product of the events happening within $\theta$ if $x_j$ is outside of the realm of possibility of $\theta$ then the whole product turns to zero.
-Thus, if $\theta$ can describe the entirety of the $X$ the likelhood function will return a non-zero value.
+Thus, if $\theta$ can describe the entirety of the $X$ the likelihood function will return a non-zero value.
 An example of this can be found in `utilities/likelihood_function_example_uniform.py`.
 
 
@@ -638,3 +638,17 @@ The equation is below,
     P_\theta(y=i|x) = \frac{e^{\theta^i x}}{\sum_{j=1}^k e^{ (\theta^j)^\top x }}
 ```
 I wrote some code as an example calculation in the file `utilities/softmax_calc.py`.
+
+#### Discriminative Models
+
+These are what people are usually first exposed to when learning about machine learning.
+These are the predictive models.
+When given features, these bad boys will produce a label.
+Examples of this model are linear and logistic regression.
+
+
+#### Generative Models
+
+All my NLP homies love these.
+These models can be either supervised or unsupervised.
+ddd 
