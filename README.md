@@ -378,6 +378,49 @@ Referring back to our sports example, if we do not have any data for professiona
 However, our model can account for what it doesn't know with smoothing.
 If we add a constant to all priors of the classes we can still account for things we have not seen if we know they will show up.
 
+### Perceptron Algorithm
+
+We should start by just showing a picture of the first example.
+![perceptron](figures/preceptron_img.png)
+
+$x_i$ where $i = 1,2,3,...d$ are the features of a single data point.
+We can think of an input $x$ as having d dimensions and each dimension gets its own weight.
+Above is a simple case where if the weights multiplied to the features is greater than or equal to 0 return 1 else return 0.
+Perceptrons can only represent only **linearly separable** concepts.
+What this means is that if you can draw a line dividing the classes, than the perceptron can work for your problem.
+If you can't then the algorithm will not work.
+
+#### Training
+
+There a great image in the slides I am going to use here. 
+![perceptron](figures/perceptron_training_exmp.png)
+
+Notice how with every point the line gets redrawn depending on the new point.
+So how does this work formally?
+An example algorithm is as follows:
+```python
+import numpy as np
+
+def training(x,y,w):
+    # Make w have as many zeros as x has features.
+    w = np.zeros(len(x))
+
+    #Iterate through each row of the dataset.
+    for i in range(len(x.shape[0])):
+        #If a classification is incorrect, shift the line based on the product of the label and the point.
+        if y[i]@w.T@x[i,:] < 1:
+            w = w + y[i]@x[i,:]
+        else:
+            
+            continue
+   
+    return w
+```
+Assuming you have got all the matrices the correct size then this algorithm will work.
+The above algorithm's loss function is called **hinge loss**.
+![hinge_loss](figures/hing_loss_vis.png)
+
+As you can see, only incorrectly classified points will have an effect on the weights.
 
 
 ## Concepts
