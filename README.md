@@ -616,7 +616,7 @@ From the above we can now formally define accuracy, recall, precision, error, an
 
 **False Positive Rate**
 ```math
-    FP\;Rate = \frac{FP}{TP+FP}
+    FP\;Rate = \frac{FP}{TN+FP}
 ```
 
 **Precision**
