@@ -422,6 +422,126 @@ The above algorithm's loss function is called **hinge loss**.
 
 As you can see, only incorrectly classified points will have an effect on the weights.
 
+#### Mistake Bound
+
+This one is odd, or at least the explanation can be hard to understand.
+Let us walk through it.
+First let us define $H_w = x$ when $w^{\top}x = 0$.
+These are the hyperplanes where our learned function equals zero.
+We can define the **margin** of our data to be $\gamma(S,w) = \min_{1\le i \le n} dist(x^i,H_w) = \frac{|x^{\top}w|}{||w||}$.
+There is no indication, but I believe the $|| * ||$ is the magnitude of a vector.
+I hope the math will clarify this distinction.
+Which is equal to, $\gamma(S) = \max_{||w||=1} \gamma(S,w)$.
+From what I can see, we only care about when $||w||=1$.
+Plugging that 1 into the fraction above, we want to know the maximum of the minimums of of the above $x$ for each hyperplane.
+We also want to say that the diameter of our mistake bound is $D(S) = \max_{x\in S} ||x||$.
+With all these seemingly out of place equations, we can finally define the mistake bound.
+
+The **mistake bound** is defined as
+```math
+    (2+D(S)^2)\gamma(S)^{-2}
+```
+So what is the intuitive understanding of the equation?
+This equation says that the total amount of mistakes we can make for a perceptron is proportional to the size of the data($D(S)$) and inversely proportional to the closest misclassified point.
+In other words, we can draw a circle that wraps the furthest misclassified point and the point with the largest distance magnitude away from the line.
+
+
+### Neural Nets
+
+Neural nets are built off of perceptrons in a nice way.
+In a perceptron, the activation function was fixed.
+Whereas in neural nets, the activation function is variable and will change.
+More on that later.
+The main idea behind neural nets is a more robust and dense perceptron.
+
+#### Layers
+
+Neural nets have three components, an **Input Layer**, **Hidden Layers**, and an **Output Layer**.
+Notice how the hidden layers is plural. 
+Meaning we can have multiple hidden layers doing whatever we want.
+Again, we will go more into that later.
+
+##### Input Layers
+Input layers give each feature a singular node.
+These feature nodes are then passed to the hidden layers and weights are applied to them.
+The input layers just define what the input feature vector should look like.
+
+**Feature Encodings** is the idea of using multiple dimensions of a vector to encode a single feature.
+There are three types, nominal, ordinal, and real-valued features.
+Real-valued features is something we are already sort of familiar with.
+It just means that the features are real numbers.
+**Nominal** features are pictured below,
+![nominal_exp](figures/nominal_example.png)
+The image above indicates 4 possible values for our input: A,C,G, and T.
+For DNA sequences, it is quite nice to model our data as it makes it simple to input into the model.
+Thus, nominal data is considered a **one hot** encoding.
+One hot referring to the fact that only one of the features is not zero.
+
+**Ordinal** features are pictured below.
+![nominal_exp](figures/ordinal_features.png)
+Now we all elements could be 1 or 0.
+They also indicated different classes. 
+This type of encoding is also referred to as the thermometer encoding.
+As more ones indicates more of something.
+
+##### Output Layers
+
+Output layers predict the result based on the results of the hidden layers.
+If an output layer only has a single node, it is used for binary classification.
+If a network has multiple nodes, then it will be used for multi-class classification. 
+Simple enough.
+The reason for this distinction is that the output layer will determine the prediction of the input.
+In the binary case, usually you would decide if that final node is a one or a zero based on a threshold or some activation function.
+Whereas, the multi-class case will you would usually pick the highest valued output node.
+The index of the choice would then be the prediction.
+
+##### Hidden Layers
+
+**Hidden Layers** are where things get interesting.
+Hidden layers define **activation functions** that manipulate the input in some way we will refer to the activation functions as $\sigma$. 
+Before we discuss the activation functions themselves, we must define their input.
+The input to any activation function is the sum of the weighted values of the previous layer.
+![hidden_layer](figures/hidden_layer.png)
+From the figure above, we can see that each input is multiplied by some weight and each neuron applies $\sigma$ to the sum of all weighted inputs plus some bias $b_1$.
+Activation functions allow for machine learning models to learn non-linear patters in data.
+In simpler terms, this just means that using non-linear $\sigma$ you can approximate more complex shapes within the dataset.
+There are 3 main activation functions that are commonly used:
+1. **sigmoid** 
+
+$$
+    \sigma(\theta^{T}x) = \frac{1}{1-e^{-\theta^{T}x}}
+$$
+2. **tanh**
+
+$$ 
+    \sigma(\theta^{T}x) = \frac{e^{\theta^{T}x}-e^{-\theta^{T}x}}{e^{-\theta^{T}x}+e^{-\theta^{T}x}}
+$$
+
+3. **ReLU**
+
+![relu](figures/relu_pic.png)
+
+I do not know how to do piecewise functions in markdown so I just took a picture or ReLU.
+
+#### Training
+
+There is a great image in the slides I will use here that generalizes the process well.
+
+![nn_training](figures/neural_net_training.png)
+
+We have a dataset $D$ with $n$ points.
+Then we initialize the weights which is different depending on the activation function.
+For example, when using tanh or sigmoid, it is better to initialize the weights to something in the middle of the function so between 0 and 1.
+Whereas, most initializations work for ReLU.
+The stopping criteria is up to the developer, I like to use euclidean distance between new $w$ and old $w$ as my criteria.
+Others like to fix the amount of iterations and some like to use the raw difference between weights.
+There are many ways to do the stopping criteria.
+The next step is the **forward pass**, this is where you feed your point to the model.
+Based on the output of the model you then do a **backward pass**.
+Which is where the gradient of the activation functions are computed.
+We then update the weights using gradient descent.
+I have coded up a full neural net from scratch to showcase this process because I think an pragmatic example can better show how this all works.
+
 
 ## Concepts
 
