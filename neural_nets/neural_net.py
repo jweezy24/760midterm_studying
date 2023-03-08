@@ -47,7 +47,7 @@ class NeuralNet:
         
         self.layers.append(HiddenLayer(algs[-1],node_sizes[-1]))
         self.ws.append(
-            np.zeros((node_sizes[-2],node_sizes[-1]),dtype=float)+0.5)
+            np.zeros((node_sizes[-1],node_sizes[-1]),dtype=float)+0.5)
 
         
     
@@ -59,6 +59,7 @@ class NeuralNet:
             p = y_hat[i]
             if p!=y_t[i]:
                 misses+=1
+        print(misses)
         cur_loss = misses/len(y_t)
         return cur_loss
 
@@ -76,7 +77,7 @@ class NeuralNet:
         cur_loss = 1
         old_loss = 0
         epochs = 0
-        while epochs < 10000:
+        while epochs < 1000:
             c = 0
             print("FORWARD")
             #Forward pass
@@ -97,22 +98,27 @@ class NeuralNet:
             print("BACKPROP")
             print(y.shape,res.shape)
             o_err = (y-res).T
+            print(o_err)
             print(o_err.shape)
             o_gradient = self.layers[-1].backward_pass(res)
-            deltas = [ (o_err,o_gradient) ]
+            o_gradient = o_gradient@o_err
+            deltas = [ (o_gradient,o_err) ]
             layer_err = o_err
             for i in reversed(range(len(self.ws)-1)):
                 
                 res = res_results[i]
                 
                 hidden_gradient = self.layers[i].backward_pass(res)
+                print(hidden_gradient)
+                print(layer_err.shape,self.ws[i].T.shape)
                 
-                # print(layer_err.shape,self.ws[i].T.shape)
                 layer_err= (layer_err@self.ws[i].T) 
+                print(layer_err)
                 print(hidden_gradient.shape,layer_err.shape)
                 
-                
-                deltas.append( (hidden_gradient@layer_err,hidden_gradient) )
+                h_err = hidden_gradient@layer_err
+            
+                deltas.append( (h_err,layer_err) )
                 print(i,layer_err.shape,hidden_gradient.shape)
 
 
@@ -131,21 +137,26 @@ class NeuralNet:
             d = deltas
 
             #update weights step
-            for i in range(len(d)-1):
+            for i in range(len(d)):
                 herr,gerr = d[i]
                 if i == 0:
                     ins = X
                 else:
                     ins = res_results[i-1]
-                print(ins.T.shape,herr.shape,gerr.shape)
+                    
+                
+                print(i)
                 if i == 0:
-                    e = lr * (herr.T + (ins.T@gerr.T))
+                    print(herr.shape,ins.T.shape,gerr.shape)
+                    e = lr * (herr@ (ins.T@gerr)).T
                 else:
-                    print(gerr.shape,ins.shape)
-                    e = lr * (herr.T + (gerr@ins.T).T)
-                print(e)
-                self.ws[i] += e
-                # print(self.ws)
+                    print(herr.shape,ins.shape,gerr.shape)
+                    e = lr * (herr@ (ins@gerr)).T
+                
+                
+                    
+                self.ws[i] -= e
+                print(self.ws)
             
             # exit()
             epochs+=1
@@ -162,10 +173,14 @@ class NeuralNet:
                 res = layer.forward_pass(res_results[c-1], self.ws[c])
                 res_results.append(res)
             c+=1
-        print(res.flatten())
+            print(self.ws[c])
+
         res_results[-1] = res_results[-1].flatten()
         res_results[-1][res_results[-1] >= 0.5] = 1
+        print(res_results[-1])
         res_results[-1][res_results[-1] < 0.5] = 0
+        print(res_results[-1])
+
 
         return res_results[-1]
 
@@ -176,7 +191,7 @@ if __name__ == "__main__":
 
     X, y = make_classification(
     # same as the previous section
-    n_samples=1000, n_features=10, n_informative=6, n_classes=2, 
+    n_samples=100, n_features=10, n_informative=6, n_classes=2, 
     # flip_y - high value to add more noise
     flip_y=0.01, 
     # class_sep - low value to reduce space between classes

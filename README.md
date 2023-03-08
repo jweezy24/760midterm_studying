@@ -550,7 +550,43 @@ So for how to implement back propagation, check out the file `neural_nets/neural
 
 Regularization is fairly straight forward.
 It is idea/algorithm whose goal it to prevent overfitting.
-There are several types of regularization methods. 
+There are several types of regularization methods each with their own pros and cons.
+
+##### Hard Constraint
+
+![hard_const](figures/hard_constraint.png)
+
+This method is pretty direct.
+We set a constraint for the loss that isn't zero and when it reaches the constraint we finish training.
+
+##### Soft Constraint
+
+![hard_const](figures/soft_constraint.png)
+
+Soft constraint is a bit different.
+We allow the function to go to zero but we add a term to the optimization problem.
+This way the loss will change location of the local min but it wont overfit.
+We can tune $\lambda$ during training.
+
+##### Bayesian Prior
+
+![hard_const](figures/Bayesian_Prior_view.png)
+
+The other two I have seen before in 532 this one is new.
+In this case, our regularizer is dependent on the probability of $\theta$.
+
+
+The typical route one should take if they don't know is to just use a soft constraint.
+Use a hard constraint if the bound of the data is known.
+Use a Bayesian if the domain knowledge is easy to represent as a prior.
+
+#### L2 Regularization and GD
+
+![gd_l2](figures/gradient_descent.png)
+
+Because we are adding a new term, we have to update our gd algorithm.
+I know the notation is not consistent, but bare with me.
+This of $\theta$ as the weights for this particular model and we can see that when taking the outcome.
 
 ## Concepts
 
