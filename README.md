@@ -542,6 +542,15 @@ Which is where the gradient of the activation functions are computed.
 We then update the weights using gradient descent.
 I have coded up a full neural net from scratch to showcase this process because I think an pragmatic example can better show how this all works.
 
+The code I have I think will work.
+I think there is something off but it looks like back propagation is correct.
+So for how to implement back propagation, check out the file `neural_nets/neural_net.py`.
+
+#### Regularization
+
+Regularization is fairly straight forward.
+It is idea/algorithm whose goal it to prevent overfitting.
+There are several types of regularization methods. 
 
 ## Concepts
 
