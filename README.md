@@ -588,6 +588,72 @@ Because we are adding a new term, we have to update our gd algorithm.
 I know the notation is not consistent, but bare with me.
 This of $\theta$ as the weights for this particular model and we can see that when taking the outcome.
 
+### Convolutional Neural Nets
+
+Convolutional neural nets(CNNs) get their own section because of how they differ from the traditional neural nets.
+CNNs revolutionized computer vision when it first showed up.
+The main difference comes from a signals concept called convolution.
+You think of convolution as *combining* two signals together equally.
+A intuitive way to grasp it is by starting with multiplication.
+When we multiply two numbers together we get a third number that is equally composed of the two numbers we started with.
+How do we multiply signals?
+If you multiply two sine waves together there really isn't too much of a change.
+But when we multiply a fourier transform of a arbitrary signal, which is a random collection of sine waves, we cannot just multiply the two signals as one would assume we need something that covers all possibilities.
+CNNs only have to apply convolution in a single layer to be considered a CNN.
+
+**Convolution** is defined, formally, as:
+```math
+    (f*g)[n] = \sum_{k=0}^{n}{f[k]g[n-k]}
+```
+Where $f$ and $g$ are two discrete signals and we want to convolve over $n$ samples.
+I chose discrete signals over continuous because CNNs work more closely to the discrete case then they do the continuous.
+As you can see, you walk on over the other at each possible point.
+I don't think knowing convolution is important but it gives me a platform to start from because the logic behind CNNs comes from this.
+
+Finally, we can discuss CNNs in more detail.
+I will define CNN convolution from with a side from the lectures.
+![cnn_setup](figures/CNN_setup.png)
+
+$W$ and $b$ are learnable parameters.
+The star represents convolution.
+A key take away is that $Y$ is a $(n-k+1)$ in both length and width.
+Again, the slides have god awful notation but we will work through it.
+![cnn_inituitive](figures/intuitive_cnns.png)
+Above we see a more intuitive visual.
+Discussing the problem intuitively, we see that the kernel moves over the output and shrinks the input.
+However, it retains some information from the input.
+notices how the larger values on the output can correspond to different regions of the image.
+
+The astute will have noticed that edges of the image could cause problems.
+For example, the edge of an image could skew inferences or confuse the model.
+The way around this is **padding**.
+Padding surrounds the input with zeros to preserve the edges.
+![cnn_inituitive_pad](figures/intuitive_padding.png)
+
+With padding comes a new way to reduce the dimensions.
+If we let the padding be $p$, the our new dimensions of the resulting output are, $(n-k+p+1),(n-k+p+1)$ for height and width respectively.
+
+The final component to our dimensionality formalization is the **stride**.
+Stride is when you skip over rows or columns.
+if we say that $s$ is the stride of our layer, $(\frac{(n-k+p+s)}{s}),(\frac{(n-k+p+s)}{s})$ for height and width respectively.
+Remember, stride can happen both for rows or columns. 
+You also could stride in only a single direction of multiple directions.
+
+There is also **pooling**.
+Pooling is the idea of applying an operation over the selected kernel values rather than multiplying and summing them up.
+Pooling is great for targeted searches.
+For example, if you would want to filter by eye color, pooling is the best approach.
+
+CNNs solve 3 main issues, translation invariance, locality, and reduces the number of parameters.
+The third reason is pretty self explanatory for images.
+translation invariance is the idea that where you look at an image could change what you are seeing.
+Meaning that space between objects is arbitrary and two things within the same image can uniquely be identified.
+Locality is actually the opposite, it says that a collection of closer pixels could uniquely make up objects.
+CNNs address both of these concerns.
+
+
+
+
 ## Concepts
 
 #### Unsupervised Learning
